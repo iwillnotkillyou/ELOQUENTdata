@@ -73,18 +73,16 @@ class SimpleQuestionMaker:
         summaries = get_pseudo_summaries(sentances, topn, excluded)
         return summaries, sentances, excluded
 
-    def fwd(self, text):
-
+    def fwd(self, text, lencheck = 200):
         text = text.replace("<FORMATTING>", "")
         text = re.sub(r"[^\w\s?.!,-]", "", text)
-        summaries, sentances, excluded = self.summary(text, 200, 10)
+        summaries, sentances, excluded = self.summary(text, lencheck, 10)
         if not any(summaries):
             return None
         candidates = []
         for x in summaries:
             summary = sentances[x]
             summary = summary.replace("\n", " ")
-            printf(summary)
             summary = re.sub(r"\A\s+", "",summary)
             doc = self.nlp(summary)
             #printf([(w.text, w.dep_, w.idx) for w in doc])
@@ -104,9 +102,9 @@ class SimpleQuestionMaker:
                 rl = len(x.right_edge.text_with_ws)
                 l = x.left_edge.idx
                 r = x.right_edge.idx+rl
-                candidates.append(quest + " " + summary[:l] + "."*(r-l) + summary[r:])
-                print(candidates[-1])
-        return min(candidates, key = lambda x: len(x))
+                candidates.append((quest + " " + summary[:l] + "."*(r-l) + summary[r:], summary))
+        return max(candidates, key = lambda x: averageR1F1(set(x[0].split(" ")),
+                                                           [set(x.split(" ")) for x in sentances]))
 
         for x in self.regexes:
             summary = re.sub(x[0], x[1], summary)
@@ -116,6 +114,16 @@ def extract_words(t):
     t = re.sub(r"\A\W+(\w)", r"\1", t)
     t = re.sub(r"(\w)\W+\Z", r"\1", t)
     return t
+
+
+def R1F1(set1, set2):
+    inter = len(set1.intersection(set2))
+    r = inter / len(set2)
+    p = inter / len(set1)
+    return 2 * r * p / (r + p) if r + p > 0 else 0
+
+def averageR1F1(candidate, document):
+    return sum([R1F1(candidate, x) for x in document]) / len(document)
 
 def get_pseudo_summaries(split_text, top_n, exclude = None):
     data = []
@@ -133,13 +141,6 @@ def get_pseudo_summaries(split_text, top_n, exclude = None):
         if len(document) == 0:
             return []
 
-        def R1F1(set1, set2):
-            inter = len(set1.intersection(set2))
-            r = inter / len(set2)
-            p = inter / len(set1)
-            return 2*r*p/(r+p) if r+p > 0 else 0
-
-        averageR1F1 = sum([R1F1(candidate,x) for x in document]) / len(document)
-        rs.append(averageR1F1)
+        rs.append(averageR1F1(candidate, document))
 
     return [x[0] for x in sorted(enumerate(rs), key = lambda x : x[1])[:top_n]]

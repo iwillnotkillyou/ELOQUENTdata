@@ -29,7 +29,7 @@ def main():
             for i in range(len(doc)-1):
                 if any(doc[i].find_tables()):
                     continue
-                d = doc[i].get_textpage().extractDICT()
+                d = doc[i].get_textpage().extractDICT(sort=True)
                 t = ""
                 ls = []
                 for x in d['blocks'][:-1]:

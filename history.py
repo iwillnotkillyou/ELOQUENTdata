@@ -11,7 +11,14 @@ def extract(in_path, out_path_assesment, out_path_rest, is_assesment):
     first = True
     with pymupdf.open(in_path) as doc:
         for i, a, sb in is_assesment:
-            t = doc[i].get_text(sort = True)
+            d = doc[i].get_textpage().extractDICT(sort = True)
+            t = ""
+            ls = []
+            for x in d['blocks'][:-1]:
+                for y in x['lines']:
+                    l = " ".join([z['text'] for z in y['spans']])
+                    ls.append(l)
+                    t += l + "\n"
             t = t.replace("Access for free at openstax.org", "")
             if a:
                 if sb:
@@ -54,23 +61,15 @@ def clean_split(text):
     rg = r"\A(\s)\s+(\S)|(\S\s)[\s•]+(\S)|(\S\s)\s+()\Z" if True else r"(\S[\s•])[\s•]+(\S)"
     text = re.sub(rg, r"\1<FORMATTING>\2", text)
     s = text.find("BEYOND THE BOOK")
-    printf(text[s:s+200])
-    text, n = re.subn("BEYOND THE BOOK[\n.]*<FORMATTING>[\n.]*<FORMATTING>", "", text)
+    text, n = re.subn(r"(BEYOND THE BOOK|THE PAST MEETS THE PRESENT|DUELING VOICES|LINK TO LEARNING|IN THEIR OWN WORDS)\n[^\n]*\n", "\n", text)
     print("sub", n)
-    printf(text.count("BEYOND THE BOOK"))
     return text.split(sectionbreak)
 
 def evaluate(text, label, question_maker):
     texts = clean_split(text)
     labels = clean_split(label)
-    if False:
-        print(texts)
-        print("Text:")
-        print(texts[1])
-        print("Created questions:")
-    print(question_maker.fwd(texts[2]))
-    #print("True questions:")
-    #print(labels[0])
+    for x in texts[1:]:
+        print(question_maker.fwd(x, 400))
 
 
 
