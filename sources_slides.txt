@@ -1,0 +1,11 @@
+https://ufal.mff.cuni.cz/~bojar/courses/npfl087/1920/01-eval.pdf
+https://ufal.mff.cuni.cz/~bojar/courses/npfl087/1920/02-smt-pbmt-nmt.pdf
+https://ufal.mff.cuni.cz/~bojar/courses/npfl087/1920/03-nmt-seq2seq-attn.pdf
+https://ufal.mff.cuni.cz/~bojar/courses/npfl087/1920/04-alignment.pdf
+https://ufal.mff.cuni.cz/~bojar/courses/npfl087/1920/05-pbmt.pdf
+https://ufal.mff.cuni.cz/~bojar/courses/npfl087/1920/06-morphology.pdf
+https://ufal.mff.cuni.cz/~bojar/courses/npfl087/1920/07-syntax-in-smt.pdf
+https://ufal.mff.cuni.cz/~bojar/courses/npfl087/1920/08-transformer-and-syntax-in-nmt.pdf
+https://ufal.mff.cuni.cz/~bojar/courses/npfl087/1920/09-word-and-sent-reprs.pdf
+https://ufal.mff.cuni.cz/~bojar/courses/npfl087/1920/10-multilingual-mt.pdf
+https://ufal.mff.cuni.cz/~bojar/courses/npfl087/1920/11-multimodal-mt.pdf
